@@ -177,6 +177,7 @@ public class SearchActivity extends AppCompatActivity
     private void launchCustomChrome(String url){
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         CustomTabsIntent customTabsIntent = builder.build();
+        builder.addDefaultShareMenuItem();
         customTabsIntent.launchUrl(this, Uri.parse(url));
     }
 
@@ -193,20 +194,29 @@ public class SearchActivity extends AppCompatActivity
 
     private void paramsFromFilters(){
         Date beginDate = filters.getBeginDate();
-        Date endDate = filters.getEndDate();
         String sortOrder = filters.getSortOrder();
         String newsDesk = filters.getNewsDesk();
 
-        if (beginDate != null) {
+        if (beginDate == null) {
             params.remove("begin_date");
         } else {
-            params.put("begin_date", "" + beginDate.getYear() + beginDate.getMonth() + beginDate.getDay());
-        }
+            String year = beginDate.getYear() + "";
+            String month;
+            String day;
 
-        if (endDate != null) {
-            params.remove("end_date");
-        } else {
-            params.put("end_date", "" + endDate.getYear() + endDate.getMonth() + endDate.getDay());
+            if (beginDate.getMonth() < 9){
+                month = "0"+ (beginDate.getMonth() + 1);
+            } else {
+                month = "" + (beginDate.getMonth() + 1);
+            }
+
+            if (beginDate.getDay() < 9){
+                day = "0"+ (beginDate.getDate() + 1);
+            } else {
+                day = "" + (beginDate.getDate() + 1);
+            }
+
+            params.put("begin_date", "" + year + month + day);
         }
 
         if (sortOrder.equals("")) {
@@ -215,7 +225,7 @@ public class SearchActivity extends AppCompatActivity
             params.put("sort", sortOrder);
         }
 
-        if (newsDesk.equals("")) {
+        if (newsDesk.equals("Any") || newsDesk.equals("")) {
             params.remove("fq");
         } else {
             params.put("fq", "news_desk:" + newsDesk);

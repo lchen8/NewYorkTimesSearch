@@ -10,6 +10,12 @@
     <string name="news_desk">News desk</string>
     <string name="save">Save</string>
 
+    <string name="arts">Arts</string>
+    <string name="fashion_and_style">Fashion and style</string>
+    <string name="sports">Sports</string>
+    <string name="any">Any</string>
+
+
     <string-array name= "sort_order_array">
         <item>newest</item>
         <item>oldest</item>
