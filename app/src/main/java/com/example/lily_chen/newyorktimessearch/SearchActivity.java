@@ -4,12 +4,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +20,8 @@ import android.view.View;
 import com.example.lily_chen.newyorktimessearch.Articles.Article;
 import com.example.lily_chen.newyorktimessearch.Articles.ArticleArrayAdapter;
 import com.example.lily_chen.newyorktimessearch.Articles.EndlessRecyclerViewScrollListener;
+import com.example.lily_chen.newyorktimessearch.Filters.Filters;
+import com.example.lily_chen.newyorktimessearch.Filters.FiltersDialogFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -27,18 +31,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity
+        implements FiltersDialogFragment.FiltersDialogListener {
 
     @BindView(R.id.rvResults) RecyclerView rvResults;
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     RequestParams params;
+    Filters filters;
 
     Handler handler = new Handler();
 
@@ -56,6 +63,7 @@ public class SearchActivity extends AppCompatActivity {
     public void setupViews() {
         ButterKnife.bind(this);
         params = new RequestParams();
+        filters = new Filters();
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
 
@@ -67,7 +75,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(staggeredGridLayoutManager);
 
@@ -114,7 +123,7 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filters) {
-            return true;
+            showFiltersDialog();
         }
 
         return super.onOptionsItemSelected(item);
@@ -122,10 +131,9 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(String query) {
         scrollListener.resetState();
-        params.put("api-key", "ce9d24ab5d564825bbd5d38847e3b474");
-        params.put("page", 0);
         params.put("q", query);
-
+        params.put("page", 0);
+        paramsFromFilters();
         articles.clear();
         fetchArticles.run();
     }
@@ -146,6 +154,7 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     JSONArray articleJsonResults = null;
+                    Log.d("DEBUG", params.toString());
                     try {
                         articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                         articles.addAll(Article.fromJSONArray(articleJsonResults));
@@ -154,6 +163,12 @@ public class SearchActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.d("DEBUG", params.toString());
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
                 }
             });
         }
@@ -164,4 +179,47 @@ public class SearchActivity extends AppCompatActivity {
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(this, Uri.parse(url));
     }
+
+    private void showFiltersDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        FiltersDialogFragment filtersDialogFragment = FiltersDialogFragment.newInstance(filters);
+        filtersDialogFragment.show(fm, "fragment_filters");
+    }
+
+    @Override
+    public void onFinishFiltersDialog(Filters filters){
+        this.filters = filters;
+    }
+
+    private void paramsFromFilters(){
+        Date beginDate = filters.getBeginDate();
+        Date endDate = filters.getEndDate();
+        String sortOrder = filters.getSortOrder();
+        String newsDesk = filters.getNewsDesk();
+
+        if (beginDate != null) {
+            params.remove("begin_date");
+        } else {
+            params.put("begin_date", "" + beginDate.getYear() + beginDate.getMonth() + beginDate.getDay());
+        }
+
+        if (endDate != null) {
+            params.remove("end_date");
+        } else {
+            params.put("end_date", "" + endDate.getYear() + endDate.getMonth() + endDate.getDay());
+        }
+
+        if (sortOrder.equals("")) {
+            params.remove("sort");
+        } else {
+            params.put("sort", sortOrder);
+        }
+
+        if (newsDesk.equals("")) {
+            params.remove("fq");
+        } else {
+            params.put("fq", "news_desk:" + newsDesk);
+        }
+    }
+
 }

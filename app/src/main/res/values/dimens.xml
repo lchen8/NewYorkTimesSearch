@@ -8,4 +8,6 @@
     <dimen name="item_padding">4dp</dimen>
     <dimen name="item_elevation">2dp</dimen>
 
+    <dimen name="dialogue_padding">20dp</dimen>
+
 </resources>

@@ -6,6 +6,12 @@
     <string name="search">Search</string>
     <string name="sort_by">Sort by</string>
     <string name="begin_date">Begin date</string>
-    <String name="end_date">End date</String>
-    <String name="news_desk">News desk</String>
+    <string name="end_date">End date</string>
+    <string name="news_desk">News desk</string>
+    <string name="save">Save</string>
+
+    <string-array name= "sort_order_array">
+        <item>newest</item>
+        <item>oldest</item>
+    </string-array>
 </resources>
