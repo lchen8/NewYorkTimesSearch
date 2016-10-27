@@ -1,4 +1,4 @@
-package com.example.lily_chen.newyorktimessearch.Models;
+package com.example.lily_chen.newyorktimessearch.Articles;
 
 import org.json.JSONArray;
 import org.json.JSONException;

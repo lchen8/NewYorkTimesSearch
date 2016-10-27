@@ -1,4 +1,4 @@
-package com.example.lily_chen.newyorktimessearch.Adapters;
+package com.example.lily_chen.newyorktimessearch.Articles;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.lily_chen.newyorktimessearch.Models.Article;
+import com.bumptech.glide.Glide;
 import com.example.lily_chen.newyorktimessearch.R;
 
 import java.util.List;
@@ -22,14 +22,36 @@ import butterknife.ButterKnife;
 public class ArticleArrayAdapter extends
         RecyclerView.Adapter<ArticleArrayAdapter.ViewHolder>{
 
+    private OnItemClickListener listener;
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivImage) ImageView image;
         @BindView(R.id.tvTitle) TextView title;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -69,8 +91,15 @@ public class ArticleArrayAdapter extends
         TextView tvTitle = viewHolder.title;
         tvTitle.setText(article.getHeadline());
         ImageView ivImage = viewHolder.image;
+        ivImage.setImageResource(R.drawable.default_nty_logo);
 
-        // inflate the image
+        String thumbnail = article.getThumbnail();
+        if (thumbnail.length() != 0) {
+            // inflate the image
+            Glide.with(context)
+                    .load(article.getThumbnail())
+                    .into(ivImage);
+        }
     }
 
     // Returns the total count of items in the list

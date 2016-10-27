@@ -21,7 +21,7 @@
         <item name="android:layout_margin">@dimen/item_margin</item>
         <item name="android:padding">@dimen/item_padding</item>
         <item name="android:elevation">@dimen/item_elevation</item>
-        <item name="android:background">@drawable/gradient_white_grey</item>
+        <item name="android:background">@drawable/article_item_states</item>
     </style>
 
 </resources>

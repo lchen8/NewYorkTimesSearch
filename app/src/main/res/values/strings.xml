@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">NewYorkTimesSearch</string>
+    <string name="app_name">New York Times Search</string>
     <string name="action_settings">Settings</string>
+    <string name="filters">Filters</string>
     <string name="hint">Enter search query</string>
     <string name="search">Search</string>
+    <string name="sort_by">Sort by</string>
+    <string name="begin_date">Begin date</string>
+    <String name="end_date">End date</String>
+    <String name="news_desk">News desk</String>
 </resources>
