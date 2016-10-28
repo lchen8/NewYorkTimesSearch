@@ -60,7 +60,7 @@ GIF created with Recordit.
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Using fragments / dialogs was a bit confusing. I had trouble with DatePicker and am not sure what the best practices are concerning the Date object type.
 
 ## Open-source libraries used
 
