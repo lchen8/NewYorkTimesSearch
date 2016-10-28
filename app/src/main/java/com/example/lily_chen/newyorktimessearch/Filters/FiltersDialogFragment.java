@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,7 +123,6 @@ public class FiltersDialogFragment extends DialogFragment implements DatePickerD
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         beginDate = new Date(year, monthOfYear, dayOfMonth);
         tvDate.setText(String.format("%d / %d / %d", monthOfYear+1, dayOfMonth, year));
-        Log.i("Debug", tvDate.getText().toString());
     }
 
     @OnClick(R.id.btSave)
