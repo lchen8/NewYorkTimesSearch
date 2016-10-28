@@ -46,7 +46,13 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
+Search screen, filters:
+http://g.recordit.co/lpe9GgE5rs.gif
+
 <img src='http://g.recordit.co/lpe9GgE5rs.gif' title='Video Walkthrough' width='400' alt='Video Walkthrough' />
+
+Custom chrome, sharing:
+http://g.recordit.co/lHOJH0MraX.gif
 
 <img src='http://g.recordit.co/lHOJH0MraX.gif' title='Video Walkthrough' width='400' alt='Video Walkthrough' />
 
